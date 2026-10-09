@@ -1,10 +1,15 @@
 # Python environment
 .venv/
+venv/
+env/
 .vscode/
+.DS_Store
+*.log
 
 # Python cache
 __pycache__/
 *.pyc
+*.py[cod]
 
 # Secrets
 .env
