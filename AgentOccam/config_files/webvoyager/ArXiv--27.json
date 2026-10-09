@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "arxiv"
+  ],
+  "task_id": "ArXiv--27",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://arxiv.org/",
+  "geolocation": null,
+  "intent": "On ArXiv, what categories does Economics include, and what are their abbreviations?",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "Econometrics (econ.EM), General Economics (econ.GN), and Theoretical Economics (econ.TH)"
+    }
+  }
+}

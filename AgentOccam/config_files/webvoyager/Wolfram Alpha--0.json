@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "wolfram alpha"
+  ],
+  "task_id": "Wolfram Alpha--0",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.wolframalpha.com/",
+  "geolocation": null,
+  "intent": "derivative of x^2 when x=5.6",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "11.2"
+    }
+  }
+}

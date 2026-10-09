@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "google map"
+  ],
+  "task_id": "Google Map--33",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.google.com/maps/",
+  "geolocation": null,
+  "intent": "Check out Denver International Airport's information and tell me: 1) which level has the least proportion in reviews; 2) what are its Accessibility and Amenities.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "star 2 has the least proportion; Accessibility: Assistive hearing loop; Wheelchair accessible entrance; Wheelchair accessible parking lot; Wheelchair accessible restroom; Wheelchair accessible seating; Amenities: Baggage storage; Wi-Fi; Free Wi-Fi"
+    }
+  }
+}

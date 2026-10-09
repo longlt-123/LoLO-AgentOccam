@@ -1,0 +1,74 @@
+logging: True
+verbose: 1
+debug: False
+logdir: "../AgentOccam-Trajectories"
+logname: "AgentOccam-WebVoyager"
+max_steps: 20
+agent:
+  type: "AgentOccam"
+  others:
+    max_steps: 20
+    logname: "AgentOccam-WebVoyager"
+    logging: True
+    verbose: 1
+    debug: False
+  actor:
+    debug: 0
+    verbose: 1
+    number: 1
+    model: "gpt-4-turbo"
+    documented_interaction_elements: ["url", "plan", "reason", "observation summary", "retained element ids", "observation highlight"]
+    online_interaction_elements: []
+    input: ["step", "objective", "previous plans", "interaction history", "current observation"]
+    interaction_history:
+      verbose: True
+      type: ["text"]
+      step_num: 3
+    current_observation:
+      type: ["text"]
+    output: ["interaction history summary", "observation description", "reason", "action", "observation highlight"]
+    planning_command: ["branch", "prune"]
+    navigation_command: ["click", "type", "stop", "note", "go_back"]
+    play: ["step", "objective", "previous plans", "observation description", "reason", "action"]
+    trash: ["objective", "step", "url", "instruction", "online input", "response"]
+  critic:
+    mode: false
+    debug: 0
+    verbose: 1
+    model: "gpt-4-turbo"
+    documented_interaction_elements: []
+    online_interaction_elements: []
+    character: "normal"
+    input: ["objective", "previous plans", "interaction history", "step", "current observation"]
+    interaction_history:
+      verbose: True
+      type: ["text"]
+      step_num: "all"
+    current_observation:
+      type: ["text"]
+    output: ["observation description", "mistakes"]
+    trash: ["instruction", "online input", "response"]
+  judge:
+    mode: false
+    debug: 0
+    verbose: 1
+    model: "gpt-4-turbo"
+    documented_interaction_elements: []
+    online_interaction_elements: []
+    strict: false
+    input: ["objective", "previous plans", "interaction history", "step", "current observation", "action choices"]
+    interaction_history:
+      verbose: True
+      type: ["text"]
+      step_num: "all"
+    current_observation:
+      type: ["text"]
+    output: ["plan progress assessment", "action assessment", "action selection"]
+    trash: ["instruction", "online input", "response"]
+env:
+  fullpage: true
+  prune: true
+  max_browser_rows: 500
+  headless: True
+  relative_task_dir: "webvoyager"
+  task_ids: ["Allrecipes--3"]

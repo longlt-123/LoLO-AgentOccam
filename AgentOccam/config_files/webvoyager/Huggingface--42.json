@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "huggingface"
+  ],
+  "task_id": "Huggingface--42",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://huggingface.co/",
+  "geolocation": null,
+  "intent": "Check the Dataset Viewer for ai2lumos/lumos_complex_qa_plan_onetime on Hugging face. what is the content corresponding to user in the first message?",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "content: Please provide a reasonable subgoal-based plan to solve the given task.\\nTask: What was the opening date of the museum dedicated to the war that, after it occurred, Boston became one of the wealthiest international ports?; Initial Environment Description: None."
+    }
+  }
+}

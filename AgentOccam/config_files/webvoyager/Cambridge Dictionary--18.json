@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "cambridge dictionary"
+  ],
+  "task_id": "Cambridge Dictionary--18",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://dictionary.cambridge.org/",
+  "geolocation": null,
+  "intent": "Search for \"to behave well\" in Cambridge Dictionary's Thesaurus and see which synonyms the dictionary gives.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "behaves themselves; be on their best behaviour"
+    }
+  }
+}

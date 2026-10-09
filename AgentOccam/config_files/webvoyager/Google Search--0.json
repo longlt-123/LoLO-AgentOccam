@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "google search"
+  ],
+  "task_id": "Google Search--0",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.google.com/",
+  "geolocation": null,
+  "intent": "Find the initial release date for Guardians of the Galaxy Vol. 3 the movie.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "May 5, 2023"
+    }
+  }
+}

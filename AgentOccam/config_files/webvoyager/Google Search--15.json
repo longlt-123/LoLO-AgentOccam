@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "google search"
+  ],
+  "task_id": "Google Search--15",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.google.com/",
+  "geolocation": null,
+  "intent": "Please try to log in to twitter with email: webagenttest@testmail.com and password: test123456. Let me know if the login was successful.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "Not successful"
+    }
+  }
+}

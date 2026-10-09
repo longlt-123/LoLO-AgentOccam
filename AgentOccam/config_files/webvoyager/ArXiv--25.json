@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "arxiv"
+  ],
+  "task_id": "ArXiv--25",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://arxiv.org/",
+  "geolocation": null,
+  "intent": "Browse the ArXiv store and let me know how many different types of merchandise are available.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "6, arXiv Logo Shirt, arXiv Logo Mug, arXiv is Open Science, Gift cards, arXiv Morning Mug, arXiv Forever"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "google search"
+  ],
+  "task_id": "Google Search--19",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.google.com/",
+  "geolocation": null,
+  "intent": "What are the first 7 bits of the SHA of the Bert's latest commit on GitHub, and what exactly was changed in that commit.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "eedf571, Smaller BERT Models"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "wolfram alpha"
+  ],
+  "task_id": "Wolfram Alpha--37",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.wolframalpha.com/",
+  "geolocation": null,
+  "intent": "How many days are there between February 12, 2024 and August 9, 2050?",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "9675"
+    }
+  }
+}

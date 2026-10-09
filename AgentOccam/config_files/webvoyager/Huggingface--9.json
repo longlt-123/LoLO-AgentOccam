@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "huggingface"
+  ],
+  "task_id": "Huggingface--9",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://huggingface.co/",
+  "geolocation": null,
+  "intent": "Find the most download machine translation model on Huggingface which focuses on English and Japanese (en-ja) and report the evaluation metrics stated for it.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "Helsinki-NLP/opus-mt-ja-en; BLEU 41.7\t; chr-F 0.589"
+    }
+  }
+}

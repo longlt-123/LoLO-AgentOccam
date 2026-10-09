@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "arxiv"
+  ],
+  "task_id": "ArXiv--37",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://arxiv.org/",
+  "geolocation": null,
+  "intent": "Find the names of people in ArXiv's Leadership Team.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "Ramin Zabih, Yoav Artzi, Stephanie Orphan, Steinn Sigurdsson, and Charles Frankston."
+    }
+  }
+}

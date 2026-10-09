@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "apple"
+  ],
+  "task_id": "Apple--17",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.apple.com/",
+  "geolocation": null,
+  "intent": "Search Apple for the accessory Smart Folio for iPad and check the closest pickup availability next to zip code 90038.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "Apple Tower Theatre"
+    }
+  }
+}

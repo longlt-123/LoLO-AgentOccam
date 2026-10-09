@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "wolfram alpha"
+  ],
+  "task_id": "Wolfram Alpha--10",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.wolframalpha.com/",
+  "geolocation": null,
+  "intent": "Give the geomagnetic field on June 20, 2023 in Oslo.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "geomagnetic field, total 51.5 uT;"
+    }
+  }
+}

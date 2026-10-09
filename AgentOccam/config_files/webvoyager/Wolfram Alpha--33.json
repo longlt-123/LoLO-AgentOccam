@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "wolfram alpha"
+  ],
+  "task_id": "Wolfram Alpha--33",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.wolframalpha.com/",
+  "geolocation": null,
+  "intent": "Identify the electrical energy output of a hydroelectric power plant named Itaipu Dam in 2023 using Wolfram Alpha.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "89.5 TWh (terawatt hours)"
+    }
+  }
+}

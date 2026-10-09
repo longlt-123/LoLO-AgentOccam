@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "allrecipes"
+  ],
+  "task_id": "Allrecipes--10",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.allrecipes.com/",
+  "geolocation": null,
+  "intent": "Find The Most Popular Recipes of the 1960s, noting the recipe name, preparation time and total time of the second recipe in this collection.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "'Swedish Meatballs I', prep time 25 mins, total time 1 hour 25 mins"
+    }
+  }
+}

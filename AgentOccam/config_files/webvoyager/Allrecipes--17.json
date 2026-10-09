@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "allrecipes"
+  ],
+  "task_id": "Allrecipes--17",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.allrecipes.com/",
+  "geolocation": null,
+  "intent": "Find the Easy Vegetarian Spinach Lasagna recipe on Allrecipes and tell me what the latest review says.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "Easy to make and very delicious"
+    }
+  }
+}

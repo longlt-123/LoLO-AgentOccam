@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "wolfram alpha"
+  ],
+  "task_id": "Wolfram Alpha--21",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.wolframalpha.com/",
+  "geolocation": null,
+  "intent": "Calculate (1+0.1*i)^8 + (1\u22120.2*i)^8  where i is a complex number.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "approximately 0.717183 - 0.425258 i"
+    }
+  }
+}

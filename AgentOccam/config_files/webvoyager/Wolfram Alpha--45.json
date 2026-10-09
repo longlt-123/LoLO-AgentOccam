@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "wolfram alpha"
+  ],
+  "task_id": "Wolfram Alpha--45",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.wolframalpha.com/",
+  "geolocation": null,
+  "intent": "A 175cm tall, 85kg, 40yo man climbs 2500 steps at about 18cm per step and 40 steps per minute. summarise the Metabolic properties.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "energy expenditure | 2720 kJ (kilojoules); average energy expenditure per step | 1.1 kJ/step (kilojoules per step); fat burned | 0.0842 kg (kilograms); oxygen consumption | 129.9 L (liters); metabolic equivalent | 7 metabolic equivalents"
+    }
+  }
+}

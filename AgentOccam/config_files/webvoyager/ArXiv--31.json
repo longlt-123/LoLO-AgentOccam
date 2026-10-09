@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "arxiv"
+  ],
+  "task_id": "ArXiv--31",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://arxiv.org/",
+  "geolocation": null,
+  "intent": "Search ArXiv for papers with 'Graph Neural Networks' in the abstract that were submitted between Jan 1, 2024, and Jan 3, 2024, and determine how many of these papers have more than five authors.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "7 papers"
+    }
+  }
+}

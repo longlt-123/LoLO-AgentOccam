@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "arxiv"
+  ],
+  "task_id": "ArXiv--42",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://arxiv.org/",
+  "geolocation": null,
+  "intent": "Find an article published between 1 January 2000 and 1 January 2005 that requires Support Vector Machines in the title and its Journey ref is ACL Workshop.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "'Using a Support-Vector Machine for Japanese-to-English Translation of Tense, Aspect, and Modality'"
+    }
+  }
+}

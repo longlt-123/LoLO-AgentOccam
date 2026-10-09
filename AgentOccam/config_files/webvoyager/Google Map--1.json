@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "google map"
+  ],
+  "task_id": "Google Map--1",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.google.com/maps/",
+  "geolocation": null,
+  "intent": "Tell me one bus stop that is nearest to the intersection of main street and Amherst street in Altavista.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "'Amherst and 7th' or 'Main Street Middle'"
+    }
+  }
+}

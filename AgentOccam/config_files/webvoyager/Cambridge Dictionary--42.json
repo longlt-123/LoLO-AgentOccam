@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "cambridge dictionary"
+  ],
+  "task_id": "Cambridge Dictionary--42",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://dictionary.cambridge.org/",
+  "geolocation": null,
+  "intent": "Convert the Cambridge Dictionary homepage from English (UK) to Deutsch.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "Action: Click English (UK), change language to: Deutsch"
+    }
+  }
+}

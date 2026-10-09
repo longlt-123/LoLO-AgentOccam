@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "wolfram alpha"
+  ],
+  "task_id": "Wolfram Alpha--5",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.wolframalpha.com/",
+  "geolocation": null,
+  "intent": "Show the solution of y\"(z) + sin(y(z)) = 0 from wolframalpha.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "y(z) = \u00b1 2 am(1/2 sqrt((c_1 + 2) (z + c_2)^2), 4/(c_1 + 2)), am(x, m) is the Jacobi amplitude function"
+    }
+  }
+}

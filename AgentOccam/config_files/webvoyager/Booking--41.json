@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "booking"
+  ],
+  "task_id": "Booking--41",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.booking.com/",
+  "geolocation": null,
+  "intent": "Browse Booking's homepage to find out which company it belongs to.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "Booking Holdings Inc."
+    }
+  }
+}

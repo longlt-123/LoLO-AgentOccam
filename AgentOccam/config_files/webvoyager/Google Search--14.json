@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "google search"
+  ],
+  "task_id": "Google Search--14",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.google.com/",
+  "geolocation": null,
+  "intent": "Find the retired players the year before last named James Smith and tell me which club he has been a member of from 2020\u20132021.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "Yeovil Town"
+    }
+  }
+}

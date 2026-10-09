@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "google map"
+  ],
+  "task_id": "Google Map--28",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.google.com/maps/",
+  "geolocation": null,
+  "intent": "Find the search settings for Google Map, what options are shown on that page?",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "Privacy & Safety: Activity, Content, More options; Other settings"
+    }
+  }
+}

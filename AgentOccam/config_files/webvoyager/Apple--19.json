@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "apple"
+  ],
+  "task_id": "Apple--19",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.apple.com/",
+  "geolocation": null,
+  "intent": "On Apple's website, what is the slogan for the Mac and what is the slogan for the Macbook pro.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "If you can dream it, Mac can do it; Mind-blowing. Head-turning"
+    }
+  }
+}

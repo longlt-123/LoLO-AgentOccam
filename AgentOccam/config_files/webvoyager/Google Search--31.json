@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "google search"
+  ],
+  "task_id": "Google Search--31",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.google.com/",
+  "geolocation": null,
+  "intent": "Discover which year Cristiano Ronaldo scored the most goals in a single season.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "2014-15 season"
+    }
+  }
+}

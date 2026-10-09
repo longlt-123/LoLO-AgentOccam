@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "apple"
+  ],
+  "task_id": "Apple--12",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.apple.com/",
+  "geolocation": null,
+  "intent": "What Apple Repair ways are mentioned on apple website, answer 2 of them.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "Any 2 of 'Send your product to Apple', 'Find an Apple Authorized Service Provider', 'Visit a Genius at an Apple Store', 'Independent Repair Providers', 'Self Service Repair'"
+    }
+  }
+}

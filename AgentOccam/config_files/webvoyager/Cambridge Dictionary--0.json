@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "cambridge dictionary"
+  ],
+  "task_id": "Cambridge Dictionary--0",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://dictionary.cambridge.org/",
+  "geolocation": null,
+  "intent": "Look up the pronunciation and definition of the word \"sustainability\" on the Cambridge Dictionary.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "UK: /s\u0259\u02ccste\u026a.n\u0259\u02c8b\u026al.\u0259.ti/, US: /s\u0259\u02ccste\u026a.n\u0259\u02c8b\u026al.\u0259.t\u032ci/; the quality of being able to continue over a period of time"
+    }
+  }
+}

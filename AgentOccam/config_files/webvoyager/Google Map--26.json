@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "google map"
+  ],
+  "task_id": "Google Map--26",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.google.com/maps/",
+  "geolocation": null,
+  "intent": "Search for Los Angeles on Google Map, try to print the map as PDF and summarize the information on the map.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "<Action>, print PDF"
+    }
+  }
+}

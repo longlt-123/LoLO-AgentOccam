@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "coursera"
+  ],
+  "task_id": "Coursera--39",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.coursera.org/",
+  "geolocation": null,
+  "intent": "Find the Space Safety course offered by TUM on Coursera. How many videos are there in module 2? What is the name of each video?",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "6 videos; Introduction; Space Debris; Mitigation; Measurements; Protection; Atmospheric Re-entry"
+    }
+  }
+}

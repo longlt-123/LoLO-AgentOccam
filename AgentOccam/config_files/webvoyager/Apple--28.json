@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "apple"
+  ],
+  "task_id": "Apple--28",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.apple.com/",
+  "geolocation": null,
+  "intent": "On the Apple website, find out if the Mac Mini can be configured with a GPU larger than 16-core.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "Yes. Mac mini Apple M2 Pro chip, Configurable to: 19-core GPU"
+    }
+  }
+}

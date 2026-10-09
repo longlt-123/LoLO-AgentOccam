@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "amazon"
+  ],
+  "task_id": "Amazon--16",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.amazon.com/",
+  "geolocation": null,
+  "intent": "Find the Return Policy for Mens Rhinestone Skull Graphic Shirt on Amazon. Color: Black, Size: XX-Large. If Free return is avaliable, tell me how to return this item.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "FREE Returns, 1. Go to Your Orders to start the return; 2. Print the return shipping label; 3. Ship it!"
+    }
+  }
+}

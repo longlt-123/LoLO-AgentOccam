@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "cambridge dictionary"
+  ],
+  "task_id": "Cambridge Dictionary--26",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://dictionary.cambridge.org/",
+  "geolocation": null,
+  "intent": "Search for the word \"nostalgia\" in the Cambridge Dictionary and report the translation of this word into Chinese.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "\u6000\u65e7"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "bbc news"
+  ],
+  "task_id": "BBC News--5",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.bbc.com/news/",
+  "geolocation": null,
+  "intent": "Find the article \"What is climate change? A really simple guide\" and use it to answer what human activities are causing climate change.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "This recent climate change has been caused by human activity, mainly the widespread use of fossil fuels - coal, oil and gas - in homes, factories and transport."
+    }
+  }
+}

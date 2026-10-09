@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "espn"
+  ],
+  "task_id": "ESPN--19",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.espn.com/",
+  "geolocation": null,
+  "intent": "Who has the highest salary in Boston Celtics Roster 2023-24?",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "Jrue Holiday"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "google map"
+  ],
+  "task_id": "Google Map--31",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.google.com/maps/",
+  "geolocation": null,
+  "intent": "First search New York's Central Park Zoo on Google Map, and then find the way to share the map. What is the generated sharing link?",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "share link, https://maps.app.goo.gl/Bnp4Q67dTHoFZ4Lx8"
+    }
+  }
+}

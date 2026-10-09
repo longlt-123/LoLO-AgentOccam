@@ -1,0 +1,19 @@
+# Python environment
+.venv/
+.vscode/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Secrets
+.env
+
+# Authentication/session
+.auth/
+
+# AgentOccam outputs
+AgentOccam-Trajectories*/
+
+# Docker images
+*.tar

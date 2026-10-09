@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "espn"
+  ],
+  "task_id": "ESPN--9",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.espn.com/",
+  "geolocation": null,
+  "intent": "Search on ESPN for how many teams have Los Angeles in their name and how many of them are NBA.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "10 teams have Los Angeles in their name; 2 teams are NBA"
+    }
+  }
+}

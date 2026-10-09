@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "arxiv"
+  ],
+  "task_id": "ArXiv--30",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://arxiv.org/",
+  "geolocation": null,
+  "intent": "Look up the submission guidelines on ArXiv for submitting a paper and tell me the formats for figures.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "Accepted figure formats: PostScript (PS, EPS) \u2014 requires LaTeX processing; JPEG, GIF, PNG or PDF figures \u2014 requires PDFLaTeX processing"
+    }
+  }
+}

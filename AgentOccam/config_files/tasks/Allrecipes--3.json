@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "allrecipes"
+  ],
+  "task_id": "Allrecipes--3",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.allrecipes.com/",
+  "geolocation": null,
+  "intent": "Locate a recipe for vegan chocolate chip cookies with over 60 reviews and a rating of at least 4.5 stars on Allrecipes.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "'Vegan Chocolate Chip, Oatmeal, and Nut Cookies', 4.9 star, 67 viewers (> 60)"
+    }
+  }
+}

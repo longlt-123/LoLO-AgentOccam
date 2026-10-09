@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "huggingface"
+  ],
+  "task_id": "Huggingface--25",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://huggingface.co/",
+  "geolocation": null,
+  "intent": "In the Hugging Face documentation, find the tutorial on loading adapters with PEFT, tell me how to load in 8bit or 4bit.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "Add the load_in_8bit or load_in_4bit parameters to from_pretrained() and set device_map=\"auto\" to effectively distribute the model to your hardware. (Or use code)"
+    }
+  }
+}

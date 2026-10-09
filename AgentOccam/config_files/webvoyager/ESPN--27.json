@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "espn"
+  ],
+  "task_id": "ESPN--27",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.espn.com/",
+  "geolocation": null,
+  "intent": "Search on ESPN for how many teams have 'Golden' in their name and how many of them are in the NHL.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "30 teams in search results, 1 team Vegas Golden Knights (NHL)"
+    }
+  }
+}

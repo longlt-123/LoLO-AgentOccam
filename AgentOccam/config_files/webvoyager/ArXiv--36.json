@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "arxiv"
+  ],
+  "task_id": "ArXiv--36",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://arxiv.org/",
+  "geolocation": null,
+  "intent": "Search 'CVPR 2023' and 'CVPR2023' through journal ref on ArXiv to see how many results there are respectively.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "'CVPR 2023': 48 results; 'CVPR2023': 9 results"
+    }
+  }
+}

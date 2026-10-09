@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "huggingface"
+  ],
+  "task_id": "Huggingface--21",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://huggingface.co/",
+  "geolocation": null,
+  "intent": "Look up the tour about how to use the 'pipeline' feature in the Hugging Face Transformers library for sentiment analysis, and identify the default model it uses.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "from transformers import pipeline \\n classifier = pipeline(\"sentiment-analysis\") \\n classifier(\"We are very happy to show you the \ud83e\udd17 Transformers library.\") ... distilbert/distilbert-base-uncased-finetuned-sst-2-english"
+    }
+  }
+}

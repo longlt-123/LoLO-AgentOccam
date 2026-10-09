@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "arxiv"
+  ],
+  "task_id": "ArXiv--10",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://arxiv.org/",
+  "geolocation": null,
+  "intent": "Visit ArXiv Help on how to withdraw an article if the submission is not yet announced.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "If your submission has not yet become publicly available you may delete or delay it. To do either of these things go to your user page and select either the Delete or Unsubmit icon."
+    }
+  }
+}

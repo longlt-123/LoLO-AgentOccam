@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "wolfram alpha"
+  ],
+  "task_id": "Wolfram Alpha--7",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.wolframalpha.com/",
+  "geolocation": null,
+  "intent": "Give the final angle and final length after 6s of a Spring pendulum with spring equilibrium length=0.12m, initial length=0.24m, initial angle=80deg, mass=1kg, spring constant=120 N/m .",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "-73.26\u00b0 from vertical; 0.252 m"
+    }
+  }
+}

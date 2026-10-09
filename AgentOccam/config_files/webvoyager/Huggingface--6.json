@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "huggingface"
+  ],
+  "task_id": "Huggingface--6",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://huggingface.co/",
+  "geolocation": null,
+  "intent": "Find the model sentence-transformers/all-MiniLM-L6-v2 and use the Inference API on the webpage to get the similarity of the following two sentences: 'Tomorrow is Sunday', 'Eat a burger on Sunday'.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "0.550"
+    }
+  }
+}

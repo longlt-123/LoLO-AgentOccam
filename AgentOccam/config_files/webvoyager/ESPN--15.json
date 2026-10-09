@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "espn"
+  ],
+  "task_id": "ESPN--15",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.espn.com/",
+  "geolocation": null,
+  "intent": "Check the scores of the NBA games played on December 25, 2023.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "(US Time) Bucks vs Knicks, 122 - 129; Warriors vs Nuggets, 114 - 120; Celtics vs Lakers, 126 - 115; 76ers vs Heat, 113 - 119; Mavericks vs Suns, 128 - 114"
+    }
+  }
+}

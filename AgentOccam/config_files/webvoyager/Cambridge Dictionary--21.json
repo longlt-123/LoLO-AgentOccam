@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "cambridge dictionary"
+  ],
+  "task_id": "Cambridge Dictionary--21",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://dictionary.cambridge.org/",
+  "geolocation": null,
+  "intent": "Search for the word \"ephemeral\" on Cambridge Dictionary and find its translation into Spanish.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "ef\u00edmero"
+    }
+  }
+}

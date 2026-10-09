@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "wolfram alpha"
+  ],
+  "task_id": "Wolfram Alpha--11",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.wolframalpha.com/",
+  "geolocation": null,
+  "intent": "Show the electrical resistivity of UNS A92024 and UNS G10800 at 20 degrees Celsius.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "UNS A92024: 4.9\u00d710^-6 \u03a9 cm (ohm centimeters) (at 20 \u00b0C); UNS G10800: 1.8\u00d710^-5 \u03a9 cm (ohm centimeters)"
+    }
+  }
+}

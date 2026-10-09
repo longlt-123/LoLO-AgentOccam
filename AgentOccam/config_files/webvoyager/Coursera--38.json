@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "coursera"
+  ],
+  "task_id": "Coursera--38",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.coursera.org/",
+  "geolocation": null,
+  "intent": "Browse Coursera, which universities and companies from Australia are partners of Coursera? List all of them.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "Macquarie University; The University of Melbourne; The University of Sydney; University of Western Australia; UNSW Sydney (The University of New South Wales)"
+    }
+  }
+}

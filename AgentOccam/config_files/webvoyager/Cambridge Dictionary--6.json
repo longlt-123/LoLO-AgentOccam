@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "cambridge dictionary"
+  ],
+  "task_id": "Cambridge Dictionary--6",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://dictionary.cambridge.org/",
+  "geolocation": null,
+  "intent": "Search for the word \"sustainability\" on the Cambridge Dictionary, what is the translation of sustainability into Chinese and French in the dictionary.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "\u53ef\u6301\u7eed\u6027; durabilit\u00e9 , viabilit\u00e9"
+    }
+  }
+}

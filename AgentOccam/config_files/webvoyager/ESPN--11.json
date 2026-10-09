@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "espn"
+  ],
+  "task_id": "ESPN--11",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.espn.com/",
+  "geolocation": null,
+  "intent": "How many NBA teams are there and list all the teams with 'New' in their name.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "30; New York Knicks; New Orleans Pelicans"
+    }
+  }
+}

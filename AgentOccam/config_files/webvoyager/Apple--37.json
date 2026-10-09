@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "apple"
+  ],
+  "task_id": "Apple--37",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.apple.com/",
+  "geolocation": null,
+  "intent": "Compare the color options of iPhone 13 Pro, iPhone 14 Pro and iPhone 15 Pro.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "iPhone 13 pro: Alpine Green, Silver, Gold, Graphite, Sierra Blue; iPhone 14 pro: Deep Purple, Gold, Silver, Space Black; iPhone 15 pro: Natural Titanium, Blue Titanium, White Titanium, Black Titanium"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "google search"
+  ],
+  "task_id": "Google Search--3",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.google.com/",
+  "geolocation": null,
+  "intent": "Show me a list of comedy movies, sorted by user ratings. Show me the Top 5 movies.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "Life Is Beautiful, Back to the Future, The Intouchables, City Lights, Modern Times"
+    }
+  }
+}

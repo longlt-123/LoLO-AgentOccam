@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "wolfram alpha"
+  ],
+  "task_id": "Wolfram Alpha--34",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.wolframalpha.com/",
+  "geolocation": null,
+  "intent": "Calculate the mass of Jupiter compared to Earth using Wolfram Alpha. Also, find the length of one day on Jupiter.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "317.8 times that of Earth, and the length of one day on Jupiter is approximately 9.925 hours"
+    }
+  }
+}

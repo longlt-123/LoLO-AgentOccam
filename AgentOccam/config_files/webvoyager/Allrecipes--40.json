@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "allrecipes"
+  ],
+  "task_id": "Allrecipes--40",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://www.allrecipes.com/",
+  "geolocation": null,
+  "intent": "Browse the about us section of Allrecipes for a brief introduction to The Allrecipes Allstars.",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "The Allrecipes Allstars: Social media influencers, registered dietitians, grillmasters, and more seasoned home cooks make up our enthusiastic squad of 100+ brand ambassadors. This diverse, food-loving crew spans the U.S. geographically and represents many different cultures, ethnicities, and family makeups. Since 2011, the Allstars have created tens of thousands of original recipes, photos, and reviews plus shared their cooking expertise via flat and video content on our website, social media, plus more marketing channels."
+    }
+  }
+}

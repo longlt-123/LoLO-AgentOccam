@@ -1,0 +1,20 @@
+{
+  "sites": [
+    "huggingface"
+  ],
+  "task_id": "Huggingface--14",
+  "require_login": false,
+  "storage_state": null,
+  "start_url": "https://huggingface.co/",
+  "geolocation": null,
+  "intent": "How much is the Pro account of Hugging face for a month and what are the features?",
+  "require_reset": false,
+  "eval": {
+    "eval_types": [
+      "string_match"
+    ],
+    "reference_answers": {
+      "fuzzy_match": "$9/month; Pro Account: Get a PRO badge on your profile, Early access to new features, Unlock Inference for PROs, Higher tier for AutoTrain"
+    }
+  }
+}
