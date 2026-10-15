@@ -294,6 +294,7 @@ class ScriptBrowserEnv(Env[dict[str, Observation], Action]):
             pass
         
         suffix = getattr(self.global_config, "logname", "")
+        print("[Screenshot] Bắt đầu chụp", flush=True)
         if suffix:
             img_bytes = self.page.screenshot(path=f"output/screenshot-{suffix}.png", full_page=True)
         else:
@@ -328,6 +329,11 @@ class ScriptBrowserEnv(Env[dict[str, Observation], Action]):
         marked_image = base64.b64encode(img_bytes).decode()
         
         self.page.evaluate(remove_label_mark_script)
+
+        print(
+            f"[Screenshot] Đã trả về {len(img_bytes)} bytes",
+            flush=True,
+        )
         
         return {
             "raw_image": raw_image,

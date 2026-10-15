@@ -1102,11 +1102,29 @@ class ObservationHandler:
 
         return spaces.Dict({"text": text_space, "image": image_space})
 
+    # def get_observation(
+    #     self, page: Page, client: CDPSession, context: str = '',
+    # ) -> dict[str, Observation]:
+    #     text_obs = self.text_processor.process(page, client, context)
+    #     image_obs = self.image_processor.process(page, client, context)
+    #     return {"text": text_obs, "image": image_obs}
+
     def get_observation(
-        self, page: Page, client: CDPSession, context: str = '',
+        self, page: Page, client: CDPSession, context: str = "",
     ) -> dict[str, Observation]:
         text_obs = self.text_processor.process(page, client, context)
-        image_obs = self.image_processor.process(page, client, context)
+
+        # Tạm tắt ảnh observation cho thí nghiệm text-only.
+        # Giữ đúng kiểu và kích thước của trường "image".
+        image_obs = np.zeros(
+            (
+                self.viewport_size["height"],
+                self.viewport_size["width"],
+                3,
+            ),
+            dtype=np.uint8,
+        )
+
         return {"text": text_obs, "image": image_obs}
 
     def get_observation_metadata(self) -> dict[str, ObservationMetadata]:

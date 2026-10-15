@@ -101,6 +101,9 @@ class WebArenaEnvironmentWrapper():
                 action_cmds = []
 
         for action_cmd in action_cmds:
+            if action_cmd["action_type"] == ActionTypes.STOP:
+                self.update_webarena_metrics(action_cmd)
+                return self.status()
             try:
                 self.obs, _, self.terminated, _, self.info = self.webarena_env.step(action_cmd) 
                 self.update_webarena_metrics(action_cmd)

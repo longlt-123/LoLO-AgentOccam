@@ -2,13 +2,13 @@ logging: True
 verbose: 1
 debug: False
 logdir: "../AgentOccam-Trajectories"
-logname: "AgentOccam_QwenShopping"
+logname: "AgentOccam_Qwen14bShopping"
 max_steps: 20
 agent:
   type: "AgentOccam"
   others:
     max_steps: 20
-    logname: "AgentOccam_QwenShopping"
+    logname: "AgentOccam_Qwen14bShopping"
     logging: True
     verbose: 1
     debug: False
@@ -16,7 +16,7 @@ agent:
     debug: 0
     verbose: 1
     number: 1
-    model: "qwen2.5:3b"
+    model: "qwen3-14b"
     documented_interaction_elements: ["url", "plan", "reason", "observation summary", "retained element ids", "observation highlight"]
     online_interaction_elements: []
     input: ["step", "objective", "previous plans", "interaction history", "current observation"]
@@ -35,7 +35,7 @@ agent:
     mode: false
     debug: 0
     verbose: 1
-    model: "qwen2.5:3b"
+    model: "qwen3-14b"
     documented_interaction_elements: []
     online_interaction_elements: []
     character: "normal"
@@ -52,7 +52,7 @@ agent:
     mode: false
     debug: 0
     verbose: 1
-    model: "qwen2.5:3b"
+    model: "qwen3-14b"
     documented_interaction_elements: []
     online_interaction_elements: []
     strict: false
@@ -70,4 +70,4 @@ env:
   prune: true
   max_browser_rows: 500
   headless: False
-  task_ids: [21, 22, 23]
+  task_ids: [24, 25, 26]
