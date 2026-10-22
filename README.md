@@ -347,7 +347,7 @@ Chạy từ `D:\INT3011E\AgentOccam`:
 $runStamp = Get-Date -Format "yyyyMMdd-HHmmss"
 $env:LLM_METRICS_PATH = "metrics/$runStamp/llm_calls.csv"
 
-python eval_webarena.py --config AgentOccam/configs/AgentOccam_shopping_qwen.yml
+python -X utf8 eval_webarena.py --config AgentOccam/configs/AgentOccam_shopping_qwen.yml
 ```
 
 Lệnh này dùng tập task được YAML/script chọn, không tự giới hạn một task. Sau khi smoke test ổn mới mở rộng 60 task. Với WebChoreArena, dùng entrypoint và YAML tương ứng của repo; không mặc định đổi tên script là đủ.
