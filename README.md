@@ -344,6 +344,9 @@ ARRANGE_MESSAGE_FOR_MODEL_MAP["qwen"] = arrange_message_for_gpt
 Chạy từ `D:\INT3011E\AgentOccam`:
 
 ```powershell
+$runStamp = Get-Date -Format "yyyyMMdd-HHmmss"
+$env:LLM_METRICS_PATH = "metrics/$runStamp/llm_calls.csv"
+
 python eval_webarena.py --config AgentOccam/configs/AgentOccam_shopping_qwen.yml
 ```
 
@@ -357,6 +360,42 @@ Quan sát các mốc:
 4. Task kết thúc, evaluator chạy và log/summary được lưu.
 
 Đường dẫn output phụ thuộc cấu hình; xem dòng `Saved log to ...`. Không coi task đã được chấm hợp lệ nếu evaluator phát sinh lỗi API.
+
+Sau khi chạy xong, thực hiện trong cùng terminal:
+```powershell
+@'
+import os
+from pathlib import Path
+import pandas as pd
+
+path = Path(os.environ["LLM_METRICS_PATH"])
+df = pd.read_csv(path)
+
+df["failed_calls"] = df["status"].eq("error").astype(int)
+df["missing_usage"] = (
+    df["status"].eq("ok")
+    & df[["input_tokens", "output_tokens"]].isna().any(axis=1)
+).astype(int)
+
+summary = df.groupby("task_id", dropna=False).agg(
+    api_calls=("status", "size"),
+    failed_calls=("failed_calls", "sum"),
+    calls_missing_usage=("missing_usage", "sum"),
+    input_tokens=("input_tokens", lambda s: s.sum(min_count=1)),
+    output_tokens=("output_tokens", lambda s: s.sum(min_count=1)),
+    llm_seconds=("llm_seconds", "sum"),
+)
+
+output = path.with_name("llm_by_task.csv")
+summary.to_csv(output)
+print(summary.to_string())
+print(f"\nSaved: {output}")
+'@ | python -
+```
+Bạn sẽ có:
+- llm_calls.csv: từng lần gọi API.
+- llm_by_task.csv: tổng token và tổng thời gian API theo task.
+- summary.csv của AgentOccam: reward, số hành động và task_seconds.
 
 ## 11. Các giới hạn cần biết trước benchmark
 
