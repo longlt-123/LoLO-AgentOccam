@@ -7,6 +7,10 @@ import base64
 import io
 import requests
 import os
+import csv
+from pathlib import Path
+from datetime import datetime, timezone
+
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", None)
 AZURE_ENDPOINT = os.environ.get("AZURE_ENDPOINT", None)
 headers = {
@@ -15,13 +19,77 @@ headers = {
 }
 DEFAULT_SYSTEM_PROMPT = "You are a helpful assistant."
 
+def measured_completion(client, *, source, **kwargs):
+    metrics_path = Path(
+        os.environ.get("LLM_METRICS_PATH", "metrics/llm_calls.csv")
+    )
+    metrics_path.parent.mkdir(parents=True, exist_ok=True)
+
+    started = time.perf_counter()
+    response = None
+    error_type = ""
+
+    try:
+        response = client.chat.completions.create(**kwargs)
+        return response
+    except Exception as exc:
+        error_type = type(exc).__name__
+        raise
+    finally:
+        elapsed = time.perf_counter() - started
+        usage = getattr(response, "usage", None)
+
+        # Không coi token không biết là 0.
+        input_tokens = getattr(usage, "prompt_tokens", None)
+        output_tokens = getattr(usage, "completion_tokens", None)
+        total_tokens = getattr(usage, "total_tokens", None)
+
+        row = {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "task_id": os.environ.get("CURRENT_TASK_ID", ""),
+            "source": source,
+            "model": kwargs.get("model", ""),
+            "input_tokens": input_tokens,
+            "output_tokens": output_tokens,
+            "total_tokens": total_tokens,
+            "llm_seconds": round(elapsed, 4),
+            "status": "error" if error_type else "ok",
+            "error_type": error_type,
+        }
+
+        # Lỗi ghi thống kê không được làm gọi lại model.
+        try:
+            write_header = (
+                not metrics_path.exists()
+                or metrics_path.stat().st_size == 0
+            )
+            with metrics_path.open(
+                "a", newline="", encoding="utf-8"
+            ) as file:
+                writer = csv.DictWriter(file, fieldnames=list(row))
+                if write_header:
+                    writer.writeheader()
+                writer.writerow(row)
+        except OSError as exc:
+            print(f"[METRICS WARNING] Không ghi được CSV: {exc}")
+
+        print(
+            f"[LLM] task={row['task_id']} "
+            f"model={row['model']} "
+            f"in={input_tokens} out={output_tokens} "
+            f"time={elapsed:.2f}s status={row['status']}",
+            flush=True,
+        )
+
 def call_gpt(prompt, model_id="gpt-3.5-turbo", system_prompt=DEFAULT_SYSTEM_PROMPT):
     num_attempts = 0
     while True:
         if num_attempts >= 10:
             raise ValueError("OpenAI request failed.")
         try:
-            response = OpenAI().chat.completions.create(
+            response = measured_completion(
+                OpenAI(),
+                source="call_gpt",
                 model=model_id,
                 messages=[
                     {"role": "system", "content": system_prompt},
@@ -122,7 +190,9 @@ def call_gpt_with_messages(messages, model_id="gpt-3.5-turbo", system_prompt=DEF
                 response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
                 return response.json()["choices"][0]["message"].get("content", "").strip()
             else:
-                response = client.chat.completions.create(
+                response = measured_completion(
+                    client,
+                    source="call_gpt_with_messages",
                     model=model_id,
                     messages=messages if messages[0]["role"] == "system" else [{"role": "system", "content": system_prompt}] + messages,
                     temperature=0.5,

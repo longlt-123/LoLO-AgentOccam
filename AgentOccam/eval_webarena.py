@@ -4,6 +4,8 @@ import re
 import argparse
 import os
 import shutil
+from pathlib import Path
+import shutil
 
 from AgentOccam.env import WebArenaEnvironmentWrapper
 
@@ -88,12 +90,15 @@ def run():
         with open(config_file, "r") as f:
             task_config = json.load(f)
             print(f"Task {task_config['task_id']}.")
+            os.environ["CURRENT_TASK_ID"] = str(task_config["task_id"])
         if os.path.exists(os.path.join(dstdir, f"{task_config['task_id']}.json")):
             print(f"Skip {task_config['task_id']}.")
             continue
         if task_config['task_id'] in list(range(600, 650))+list(range(681, 689)):
             print("Reddit post task. Sleep 30 mins.")
             time.sleep(1800)
+
+        task_started = time.perf_counter()
         env = WebArenaEnvironmentWrapper(config_file=config_file, 
                                         max_browser_rows=config.env.max_browser_rows, 
                                         max_steps=config.max_steps, 
@@ -106,8 +111,38 @@ def run():
         
         agent = agent_init()
         objective = env.get_objective()
-        status = agent.act(objective=objective, env=env)
-        env.close()
+
+        try:
+            status = agent.act(objective=objective, env=env)
+        finally:
+            try:
+                # Lưu log trước khi task tiếp theo xóa file trash dùng chung.
+                actor = getattr(agent, "actor", None)
+                trash_file = getattr(actor, "output_trash_path", None)
+
+                if config.logging and trash_file:
+                    source = Path(trash_file)
+
+                    if source.is_file():
+                        destination = (
+                            Path(dstdir)
+                            / f"{task_config['task_id']}-trash.txt"
+                        )
+                        shutil.copy2(source, destination)
+                        print(f"Saved agent responses to {destination}")
+            finally:
+                env.close()
+
+        task_seconds = time.perf_counter() - task_started
+
+        status = dict(status or {})
+        status["task_seconds"] = round(task_seconds, 4)
+
+        print(
+            f"[TASK] id={task_config['task_id']} "
+            f"time={task_seconds:.2f}s",
+            flush=True,
+        )
 
         if config.logging:
             with open(config_file, "r") as f:
