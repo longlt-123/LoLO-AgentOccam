@@ -6,6 +6,15 @@ logname: "AgentOccam_Qwen14bShopping"
 max_steps: 20
 agent:
   type: "AgentOccam"
+  stop_guard:
+    enabled: true
+    requirement: "auto"
+    # Verified against the Shopping container source; reverify if the site changes.
+    order_history_sort:
+      origin: "http://localhost:7770"
+      direction: "descending"
+      source: "magento_history_source"
+      reference: "shopping_final_0712:Magento/Sales/Block/Order/History.php:sha256=9bc70887666e2fde89d40a7f380835410bd2ec13e68b2f19a8697dea2de9c418"
   others:
     max_steps: 20
     logname: "AgentOccam_Qwen14bShopping"

@@ -1,0 +1,3 @@
+task,task_id,model,type,logfile,done,reward,success,num_actions
+config_files/tasks/21.json,21,qwen2.5:3b,AgentOccam,AgentOccam-Trajectories/AgentOccam_QwenShopping\21.json,True,0.0,0.0,1
+config_files/tasks/22.json,22,qwen2.5:3b,AgentOccam,AgentOccam-Trajectories/AgentOccam_QwenShopping\22.json,True,0.0,0.0,6

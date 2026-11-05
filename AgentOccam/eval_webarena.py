@@ -153,6 +153,8 @@ def run():
                 "id": task_config['task_id'],
                 "model": config.agent.actor.model if hasattr(config.agent, "actor") else config.agent.model_name,
                 "type": config.agent.type,
+                "stop_mode": getattr(agent, "stop_mode", None),
+                "stop_guard_config": config.agent.stop_guard.to_dict() if hasattr(config.agent, "stop_guard") else None,
                 "trajectory": agent.get_trajectory(),
             }
             summary_file = os.path.join(dstdir, "summary.csv")
@@ -161,7 +163,7 @@ def run():
                 "task_id": task_config['task_id'],
                 "model": config.agent.actor.model if hasattr(config.agent, "actor") else config.agent.model_name,
                 "type": config.agent.type,
-                "logfile": re.search(r"/([^/]+/[^/]+\.json)$", log_file).group(1),
+                "logfile": f"{Path(log_file).parent.name}/{Path(log_file).name}",
             }
             if status:
                 summary_data.update(status)

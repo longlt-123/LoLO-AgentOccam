@@ -191,6 +191,18 @@ class ScriptBrowserEnv(Env[dict[str, Observation], Action]):
         metadata = self.observation_handler.get_observation_metadata()
         return metadata
 
+    def refresh_observation(self, fail_error=""):
+        """Observe the current browser state without replaying any task action."""
+        images = self.modify_page()
+        observation = self._get_obs()
+        info = {
+            "page": DetachedPage(self.page.url, self.page.content()),
+            "fail_error": fail_error,
+            "observation_metadata": self._get_obs_metadata(),
+            "images": images,
+        }
+        return observation, info
+
     @beartype
     def reset(
         self,
@@ -265,17 +277,7 @@ class ScriptBrowserEnv(Env[dict[str, Observation], Action]):
         if self.sleep_after_execution > 0:
             time.sleep(self.sleep_after_execution)
 
-        images = self.modify_page()
-        
-        observation = self._get_obs()
-        observation_metadata = self._get_obs_metadata()
-
-        info = {
-            "page": DetachedPage(self.page.url, self.page.content()),
-            "fail_error": fail_error,
-            "observation_metadata": observation_metadata,
-            "images": images,
-        }
+        observation, info = self.refresh_observation(fail_error=fail_error)
         
         msg = (
             observation,

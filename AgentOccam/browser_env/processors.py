@@ -1,6 +1,7 @@
 import json
 import lxml
 import re
+import math
 from collections import defaultdict
 from typing import Any, TypedDict, Union
 
@@ -30,6 +31,30 @@ from .utils import (
 from .html_tools import HtmlParser, basic_attrs, print_html_object
 
 IN_VIEWPORT_RATIO_THRESHOLD = 0.8
+
+
+def bounding_rect_from_response(response):
+    """CDP may return an error/undefined remote object without a `value`.
+
+    A detached node is unavailable, not a box at (0, 0). Never invent click
+    coordinates when resolving a node fails.
+    """
+    if not isinstance(response, dict) or response.get("exceptionDetails"):
+        return None
+    result = response.get("result")
+    if not isinstance(result, dict) or result.get("subtype") == "error":
+        return None
+    value = result.get("value")
+    if not isinstance(value, dict):
+        return None
+    coordinates = [value.get(key) for key in ("x", "y", "width", "height")]
+    if not all(isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v)
+               for v in coordinates):
+        return None
+    if coordinates[2] < 0 or coordinates[3] < 0:
+        return None
+    return coordinates
+
 
 class TreeNode:
     def __init__(self, node_id, role, name, depth, **kwargs):
@@ -371,10 +396,12 @@ class TextObervationProcessor(ObservationProcessor):
             page.client, self.obs_nodes_info[element_id]["backend_id"]
         )
 
-        x = response["result"]["value"]["x"]
-        y = response["result"]["value"]["y"]
-        width = response["result"]["value"]["width"]
-        height = response["result"]["value"]["height"]
+        rect = bounding_rect_from_response(response)
+        if rect is None:
+            raise ValueError(f"Element {element_id} has no live bounding box; refresh the observation.")
+        x, y, width, height = rect
+        if width == 0 or height == 0:
+            return False
 
 
         in_viewport_ratio = _get_element_in_viewport_ratio(
@@ -719,21 +746,14 @@ class TextObervationProcessor(ObservationProcessor):
                 node["union_bound"] = None
                 continue
             backend_node_id = str(node["backendDOMNodeId"])
-            if node["role"]["value"] == "RootWebArea":
+            if node.get("role", {}).get("value") == "RootWebArea":
                 # always inside the viewport
                 node["union_bound"] = [0.0, 0.0, 10.0, 10.0]
             else:
                 response = self.get_bounding_client_rect(
                     client, backend_node_id
                 )
-                if response.get("result", {}).get("subtype", "") == "error":
-                    node["union_bound"] = None
-                else:
-                    x = response["result"]["value"]["x"]
-                    y = response["result"]["value"]["y"]
-                    width = response["result"]["value"]["width"]
-                    height = response["result"]["value"]["height"]
-                    node["union_bound"] = [x, y, width, height]
+                node["union_bound"] = bounding_rect_from_response(response)
 
         # filter nodes that are not in the current viewport
         if current_viewport_only:
@@ -1030,10 +1050,10 @@ class TextObervationProcessor(ObservationProcessor):
         response = self.get_bounding_client_rect(
             page.client, backend_node_id
         )
-        x = response["result"]["value"]["x"]
-        y = response["result"]["value"]["y"]
-        width = response["result"]["value"]["width"]
-        height = response["result"]["value"]["height"]
+        rect = bounding_rect_from_response(response)
+        if rect is None or rect[2] == 0 or rect[3] == 0:
+            raise ValueError(f"Element {element_id} has no clickable bounding box; refresh the observation.")
+        x, y, width, height = rect
         center_x = x + width / 2
         center_y = y + height / 2
         return (

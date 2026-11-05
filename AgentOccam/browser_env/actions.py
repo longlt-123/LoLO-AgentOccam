@@ -1269,7 +1269,11 @@ def execute_action(
         result = page.evaluate('window.scrollY === 0')
         return result
 
-    if "element_id" in action.keys() and action["element_id"]:
+    # Locator.click already scrolls and waits for its target. A CDP visibility
+    # preflight can fail on an expired backend node before that live locator is
+    # ever tried (notably pagination links after navigation).
+    element_id = action.get("element_id", "")
+    if action_type != ActionTypes.CLICK and "element_id" in action.keys() and action["element_id"]:
         element_id = action["element_id"]
         node = obseration_processor.get_node_info_by_element_id(int(element_id))
         while not obseration_processor.element_is_visible(page, element_id) and not is_at_bottom_of_page(page):

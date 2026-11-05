@@ -1,6 +1,15 @@
 # AgentOccam
 Code for "[AgentOccam: A Simple Yet Strong Baseline for LLM-Based Web Agents](https://arxiv.org/abs/2410.13825)" (ICLR 2025).
 
+Shopping order queries now have an observation-backed stop guard. It can stop after
+finding a matching order, enough requested examples, or a verified date boundary;
+absence and aggregate claims still need coverage of the relevant scope.
+See [configuration, rules, and offline tests](docs/stop_guard.md).
+For matched Baseline / Prompt-only / Evidence-gated runs, use the
+[three-config experiment guide](docs/stop_ablation.md).
+For a Vietnamese explanation of the changes, examples, and browser fixes, see
+[the implementation overview](docs/tong_hop_thay_doi_stop_guard.md).
+
 ![](files/overview.png)
 
 AgentOccam offers a simple but strong baseline for LLM-based web agents. By providing a URL and the task you want it to perform, AgentOccam can execute it for you. Its simplicity and effectiveness allow you to run it directly, or adapt it into a larger pipeline for its executing web tasks, such as web information retrieval before processing the documents.

@@ -18,7 +18,7 @@ __pycache__/
 .auth/
 
 # AgentOccam outputs
-AgentOccam-Trajectories*/
+# AgentOccam-Trajectories*/
 
 # Docker images
 *.tar

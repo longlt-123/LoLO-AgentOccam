@@ -1,0 +1,17 @@
+﻿task_type,total_tasks,successful_tasks,success_rate_percent,input_tokens,output_tokens,total_tokens,llm_seconds,task_seconds,num_actions,avg_input_tokens,avg_output_tokens,avg_total_tokens,avg_llm_seconds,avg_task_seconds,avg_num_actions
+Get the order number of my most recent {{status}} order ,5,3.0,60.0,25493,6217,31710,97.4119,464.7792,10,5098.6,1243.4,6342.0,19.48238,92.95584,2.0
+How much I spent on {{category}} shopping during {{time}},5,0.0,0.0,46040,12734,58774,198.6869,662.669,16,9208.0,2546.8,11754.8,39.73738,132.53379999999999,3.2
+"I am doing a market survey for one stop market, show me the most expensive product from {{product_category}} category",5,0.0,0.0,152806,90546,243352,1504.3231,2787.7303,31,30561.2,18109.2,48670.4,300.86462,557.54606,6.2
+"I have a lot of Nintendo Switch game cards now, help me find the best storage option to fit all {{num}} cards",5,2.0,40.0,75343,17989,93332,283.7933,922.7909999999999,23,15068.6,3597.8,18666.4,56.75866,184.5582,4.6
+"I have jaw bruxism problem, show me something that could alleviate the problem.",1,1.0,100.0,22981,17671,40652,286.9464,435.4612,7,22981.0,17671.0,40652.0,286.9464,435.4612,7.0
+I want to browse the products in the {{category}} category,2,1.0,50.0,12114,2947,15061,46.988699999999994,208.51319999999998,4,6057.0,1473.5,7530.5,23.494349999999997,104.25659999999999,2.0
+"List out reviewers, if exist, who mention about {{description}}",6,6.0,100.0,41301,32145,73446,526.5575,983.1262999999999,12,6883.5,5357.5,12241.0,87.75958333333334,163.85438333333332,2.0
+Tell me the status of my latest order and when will it arrive,1,1.0,100.0,8009,2563,10572,39.3895,129.9933,3,8009.0,2563.0,10572.0,39.3895,129.9933,3.0
+Tell me the total cost of my latest {{status}} order?,5,4.0,80.0,31893,9322,41215,144.5089,536.6327,12,6378.6,1864.4,8243.0,28.901780000000002,107.32654,2.4
+"Today is 6/12/2023. Tell me how many fulfilled orders I have {{period}}, and the total amount of money I spent.",5,2.0,40.0,43078,16167,59245,248.1759,729.1928,15,8615.6,3233.4,11849.0,49.635180000000005,145.83856,3.0
+What are the main criticisms of this product? Please extract the relevant sentences.,5,3.0,60.0,23737,6599,30336,101.2524,444.9633,10,4747.4,1319.8,6067.2,20.25048,88.99266,2.0
+What do customers say about {{product_type}} from {{manufature}},1,0.0,0.0,19331,5709,25040,89.173,245.042,7,19331.0,5709.0,25040.0,89.173,245.042,7.0
+What is the date when I made my first purchase on this site?,1,0.0,0.0,7767,1734,9501,27.4171,150.6524,3,7767.0,1734.0,9501.0,27.4171,150.6524,3.0
+What is the price range for products from {{brand}}?,5,2.0,40.0,24260,7342,31602,113.58850000000001,477.6644,9,4852.0,1468.4,6320.4,22.7177,95.53288,1.8
+What is the price range of {{product}} in the One Stop Market?,3,1.0,33.33,18116,4528,22644,71.7509,302.6422,6,6038.666666666667,1509.3333333333333,7548.0,23.916966666666667,100.88073333333334,2.0
+What is the {{option}} configuration of the {{product}} I bought {{time}},5,2.0,40.0,72870,44751,117621,720.5006000000001,1409.1533,24,14574.0,8950.2,23524.2,144.10012,281.83065999999997,4.8

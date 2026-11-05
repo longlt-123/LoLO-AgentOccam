@@ -1,0 +1,10 @@
+task,task_id,model,type,logfile,done,reward,success,num_actions,stop_mode,stop_guard_rejections,task_seconds,last_action_error,termination_reason
+config_files/tasks/47.json,47,qwen3-14b,AgentOccam,AgentOccam_Qwen14bShopping_evidence_gated/47.json,True,1.0,1.0,6,evidence_gated,1,1032.6495,,
+config_files/tasks/49.json,49,qwen3-14b,AgentOccam,AgentOccam_Qwen14bShopping_evidence_gated/49.json,True,0.0,0.0,1,evidence_gated,0,162.8577,"TimeoutError: Timeout 30000ms exceeded.
+=========================== logs ===========================
+taking page screenshot
+============================================================; refresh failed: TimeoutError: Timeout 30000ms exceeded.
+=========================== logs ===========================
+taking page screenshot
+============================================================",observation_refresh_failed
+config_files/tasks/49.json,49,qwen3-14b,AgentOccam,AgentOccam_Qwen14bShopping_evidence_gated/49.json,True,1.0,1.0,4,evidence_gated,0,288.4706,,

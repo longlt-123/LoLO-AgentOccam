@@ -1,4 +1,7 @@
 import json
+import traceback
+from urllib.parse import urlsplit
+from AgentOccam.stop_policy import resolve_stop_mode
 from browser_env import (
     create_id_based_action,
     create_id_based_actions,
@@ -12,6 +15,35 @@ from AgentOccam.obs_opt import (
     prune_tree,
     translate_node_to_str,
 )
+
+
+def read_order_history_sort(page):
+    """Read an explicit DOM sort declaration, never infer it from row dates/URL.
+
+    Missing/ambiguous attributes disable the shortcut. This metadata is collected
+    by the environment and cannot be supplied by the model's action or notes.
+    """
+    if urlsplit(page.url).path.rstrip("/") != "/sales/order/history":
+        return None
+    try:
+        headers = page.evaluate("""() => {
+            const table = document.querySelector('table#my-orders-table');
+            if (!table) return [];
+            return Array.from(table.querySelectorAll('th[aria-sort]'))
+                .filter(h => h.getAttribute('aria-sort') !== 'none')
+                .map(h => ({name: h.textContent.trim().toLowerCase(),
+                            direction: h.getAttribute('aria-sort')}));
+        }""")
+        if (isinstance(headers, list) and len(headers) == 1
+                and headers[0].get("name") == "date"
+                and headers[0].get("direction") in {"ascending", "descending"}):
+            return {"field": "date", "direction": headers[0]["direction"],
+                    "source": "orders_table_aria_sort"}
+    except Exception:
+        # Sorting is optional evidence; a missing table/navigation race must not
+        # turn an otherwise usable observation into a failed environment step.
+        pass
+    return None
 
 
 class WebArenaEnvironmentWrapper():
@@ -38,6 +70,8 @@ class WebArenaEnvironmentWrapper():
         self.steps = 0
         self.is_done = False
         self.reward = 0.0
+        self.last_action_error = ""
+        self.termination_reason = ""
         
         self.trajectory: Trajectory = []
         self.update_webarena_metrics()
@@ -63,7 +97,13 @@ class WebArenaEnvironmentWrapper():
             root_node = self.obs["text"][1]
             DOM_root_node = prune_tree(objective=self.objective, root_node=root_node, mode="node")
             DOM_str = translate_node_to_str(node=DOM_root_node, mode="concise")
-            return {"text": DOM_str, "image": self.obs["image"], "node": DOM_root_node}
+            observation = {"text": DOM_str, "image": self.obs["image"], "node": DOM_root_node}
+            agent_config = getattr(self.global_config, "agent", None)
+            if resolve_stop_mode(getattr(agent_config, "stop_guard", None)) == "evidence_gated":
+                sort = read_order_history_sort(self.webarena_env.page)
+                if sort:
+                    observation["order_history_sort"] = sort
+            return observation
         else:
             browser_content = self.obs["text"][0]
             browser_content = browser_content.split("\n")[:self.max_browser_rows] 
@@ -76,11 +116,17 @@ class WebArenaEnvironmentWrapper():
         return False
     
     def status(self):
-        return {'done': self.is_done, 'reward': self.reward, 'success': float(self.reward > 0), 'num_actions': self.steps}
+        status = {'done': self.is_done, 'reward': self.reward, 'success': float(self.reward > 0), 'num_actions': self.steps}
+        if getattr(self, "last_action_error", ""):
+            status["last_action_error"] = self.last_action_error
+        if getattr(self, "termination_reason", ""):
+            status["termination_reason"] = self.termination_reason
+        return status
     
     def step(self, action):
+        self.last_action_error = ""
         self.steps = self.steps + 1
-        print(f"[Step {self.steps}] {action}")
+        print(f"[Step {self.steps}] {action or '<no browser action>'}")
         print("*"*100)
         if self.steps > self.max_steps:
             print(f"Steps {self.steps} exceeded maximum {self.max_steps}")
@@ -101,14 +147,38 @@ class WebArenaEnvironmentWrapper():
                 action_cmds = []
 
         for action_cmd in action_cmds:
-            # if action_cmd["action_type"] == ActionTypes.STOP:
-            #     self.update_webarena_metrics(action_cmd)
-            #     return self.status()
+            if action_cmd["action_type"] == ActionTypes.STOP:
+                # STOP submits the answer against the current state. It must not
+                # refresh/screenshot the page: an observation failure here would
+                # otherwise discard the accepted stop and restart the actor loop.
+                self.terminated = True
+                self.update_webarena_metrics(action_cmd)
+                return self.status()
             try:
                 self.obs, _, self.terminated, _, self.info = self.webarena_env.step(action_cmd) 
                 self.update_webarena_metrics(action_cmd)
             except Exception as e:
-                print(f"Error occurred while taking step: {e}")
+                self.last_action_error = f"{type(e).__name__}: {e}"
+                print(f"Error occurred while taking step: {self.last_action_error}")
+                traceback.print_exc()
+                # The click may already have navigated before observation failed.
+                # Never replay it, or present the old DOM under the new page URL.
+                self.obs = None
+                try:
+                    self.obs, self.info = self.webarena_env.refresh_observation(
+                        fail_error=self.last_action_error)
+                    self.trajectory.append(action_cmd)
+                    self.update_webarena_metrics()
+                    print("[Browser] Refreshed observation after action error; action was not replayed.")
+                except Exception as refresh_error:
+                    self.obs = None
+                    self.is_done = True
+                    self.reward = 0.0
+                    self.termination_reason = "observation_refresh_failed"
+                    self.last_action_error += f"; refresh failed: {type(refresh_error).__name__}: {refresh_error}"
+                    traceback.print_exc()
+                # Remaining commands may refer to IDs from the old observation.
+                break
             
         return self.status()
     

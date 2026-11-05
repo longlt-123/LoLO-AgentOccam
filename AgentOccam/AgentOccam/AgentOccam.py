@@ -7,6 +7,8 @@ from AgentOccam.llms.titan import call_titan, call_titan_with_messages, arrange_
 from AgentOccam.llms.gpt import call_gpt, call_gpt_with_messages, arrange_message_for_gpt
 from AgentOccam.llms.gemini import call_gemini, call_gemini_with_messages, arrange_message_for_gemini
 from AgentOccam.utils import CURRENT_DIR, HOMEPAGE_URL
+from AgentOccam.stop_guard import StopGuard
+from AgentOccam.stop_policy import resolve_stop_mode, stopping_instruction
 
 from typing import Dict
 import re
@@ -566,6 +568,9 @@ class Actor(Agent):
             input_list.append(("text", f"{input_type.upper()}:\n"))
             input_list.append(("image", INPUT_TYPE_TO_CONTENT_MAP["current visual observation"]))
 
+        if getattr(self, "stop_guard_context", ""):
+            input_list.append(("text", self.stop_guard_context + "\n"))
+
         return self.prune_message_list(message_list=[("text", input_prefix)] + input_list + [("text", input_suffix)])
     
     def get_planning_specifications(self):
@@ -604,10 +609,8 @@ class Actor(Agent):
                 else:
                     instruction += f"\n\n| Example {i}\n\n### Input:\n{example_input}\n\n### Response: Let's think step by step.\n{example_output}"
         
-        if self.get_step() == self.config.others.max_steps - 1:
-            instruction += f"\n\nWARNING: You have a {self.config.others.max_steps}-step budget, and this would be your FINAL STEP. Wrap up your observations and return your answer with `stop [answer]` to maximize the reward."
-        # else:
-        #     instruction += f"\n\nWARNING: You have a {self.config.others.max_steps}-step budget, and there are {self.config.others.max_steps-self.get_step()} remaining attempts."
+        instruction += stopping_instruction(
+            getattr(self, "stop_mode", "baseline"), self.get_step(), self.config.others.max_steps)
 
         return instruction
     
@@ -1319,6 +1322,8 @@ class AgentOccam:
         self.critic = None
 
         self.trajectory = []
+        self.stop_guard = None
+        self.stop_mode = resolve_stop_mode(getattr(self.config, "stop_guard", None))
 
     def get_refined_objective(self):
         model_response = call_claude(self.root_prompt_template["objective_rephrasing_query"].replace("{objective}", self.objective))
@@ -1366,7 +1371,20 @@ class AgentOccam:
         action_element_list = self.actor.predict_action(criticism_elements=criticism_elements)
         self.judge.update_actor_basic_info(step=self.get_step(), planning_specifications=self.actor.get_planning_specifications(), navigation_specifications=self.actor.get_navigation_specifications(), interaction_history=self.actor.get_interaction_history(interaction_history_config=self.judge.config.interaction_history), previous_plans=self.actor.get_previous_plans(verbose=True), planning_command=self.actor.config.planning_command, navigation_command=self.actor.config.navigation_command)
         selected_action_elements, judgement_elements = self.judge.judge(action_element_list)
-        selected_action_elements = self.actor.finalize_action(selected_action_elements)
+        selected_action_elements = dict(selected_action_elements)
+        decision = self.stop_guard.check(selected_action_elements["action"]) if self.stop_guard else None
+        if decision and not decision["allowed"]:
+            print(f"[StopGuard] Rejected proposal: {selected_action_elements['action']}")
+            print(f"[StopGuard] {decision['feedback']}")
+            # Reject before finalize_action can mutate plans, notes, or the DOM.
+            # An empty environment step consumes budget but executes no browser action.
+            selected_action_elements["proposed action"] = selected_action_elements["action"]
+            selected_action_elements["action"] = ""
+            selected_action_elements.pop("navigation action", None)
+        else:
+            selected_action_elements = self.actor.finalize_action(selected_action_elements)
+        if decision:
+            selected_action_elements["stop guard"] = decision
         return {**selected_action_elements, **{"critic:"+k: criticism_elements[k] for k in criticism_elements.keys()}, **{"judge:"+k: judgement_elements[k] for k in judgement_elements.keys()}}, action_element_list
     
     def update_online_state(self, url, observation):
@@ -1387,17 +1405,30 @@ class AgentOccam:
 
     def act(self, objective, env):
         self.objective = objective
+        self.trajectory = []
         self.sites = env.get_sites()
+        if hasattr(env, "max_steps"):
+            self.config.others.max_steps = env.max_steps
+        guard_config = getattr(self.config, "stop_guard", None)
+        self.stop_mode = resolve_stop_mode(guard_config)
+        self.stop_guard = (StopGuard(objective, guard_config, sites=self.sites)
+                           if self.stop_mode == "evidence_gated" else None)
         observation = env.observation()
         url = env.get_url()
         self.update_online_state(url=url, observation=observation)
         self.init_actor()
+        self.actor.stop_mode = self.stop_mode
+        self.actor.stop_guard_context = ""
         self.init_critic()
         self.init_judge()
         while not env.done():
             observation = env.observation()
             url = env.get_url()
             self.update_online_state(url=url, observation=observation)
+            # Read the browser observation before actor highlighting/pruning changes it.
+            if self.stop_guard is not None:
+                self.stop_guard.observe(url, observation)
+                self.actor.stop_guard_context = self.stop_guard.context()
             self.actor.update_online_state(url=url, observation=observation)
             self.critic.update_online_state(url=url, observation=observation)
             self.judge.update_online_state(url=url, observation=observation)
@@ -1405,6 +1436,15 @@ class AgentOccam:
             action = action_elements["action"]
             navigation_action = action_elements["action"] if not action_elements.get("navigation action", "") else action_elements.get("navigation action", "")
             status = env.step(navigation_action)
+            if isinstance(status, dict) and status.get("last_action_error") and not status.get("done"):
+                self.actor.active_node.note.append(
+                    f"STEP {self.get_step()}: Browser action failed: {status['last_action_error']}. "
+                    "The environment refreshed the observation without replaying the action. "
+                    "Inspect the current page and use its current element IDs.")
+            if (action_elements.get("stop guard", {}).get("allowed") is False
+                    and isinstance(status, dict) and status.get("done")):
+                status = {**status, "success": 0.0, "reward": 0.0,
+                          "termination_reason": "insufficient_evidence_budget_exhausted"}
             if navigation_action and self.is_navigation(action=navigation_action) and status == False: # means invalid action
                 flaw_node = self.actor.active_node
                 flaw_node.note.append(f"STEP {self.get_step()}: You generate action \"{action}\", which has INVALID syntax. Strictly follow the action specifications.")          
@@ -1438,7 +1478,9 @@ class AgentOccam:
                         **action_elements,
                     )
 
-        return status if "status" in locals() and isinstance(status, dict) else env.status()
+        final_status = status if "status" in locals() and isinstance(status, dict) else env.status()
+        return {**final_status, "stop_mode": self.stop_mode,
+                "stop_guard_rejections": self.stop_guard.rejections if self.stop_guard else 0}
     
     def log_step(self, status, **kwargs):
         def serialize_message_list(message_list):
@@ -1447,8 +1489,11 @@ class AgentOccam:
             return "".join([m[1] for m in message_list if m[0]=="text"])
         data_to_log = {}
         data_to_log['objective'] = self.objective
+        data_to_log['stop_mode'] = self.stop_mode
         data_to_log['url'] = self.online_url
         data_to_log['observation'] = self.get_observation_text()
+        if isinstance(self.online_observation, dict) and self.online_observation.get("order_history_sort"):
+            data_to_log['order_history_sort'] = self.online_observation["order_history_sort"]
         for (k, v) in status.items():
             data_to_log[k] = v
         for k in kwargs.keys():
