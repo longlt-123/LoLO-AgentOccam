@@ -8,3 +8,4 @@ taking page screenshot
 taking page screenshot
 ============================================================",observation_refresh_failed
 config_files/tasks/49.json,49,qwen3-14b,AgentOccam,AgentOccam_Qwen14bShopping_evidence_gated/49.json,True,1.0,1.0,4,evidence_gated,0,288.4706,,
+config_files/tasks/50.json,50,qwen3-14b,AgentOccam,AgentOccam_Qwen14bShopping_evidence_gated/50.json,True,0.0,0.0,10,evidence_gated,4,743.6171,,

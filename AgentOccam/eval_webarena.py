@@ -10,6 +10,7 @@ import shutil
 from AgentOccam.env import WebArenaEnvironmentWrapper
 
 from AgentOccam.AgentOccam import AgentOccam
+from AgentOccam.decision_tree import save_decision_tree
 from webagents_step.utils.data_prep import *
 from webagents_step.agents.step_agent import StepAgent
 
@@ -173,6 +174,14 @@ def run():
                 summary_file=summary_file,
                 summary_data=summary_data,
             )
+            tree_file = save_decision_tree(
+                log_file,
+                log_data,
+                actor=getattr(agent, "actor", None),
+                status=status,
+                objective=objective,
+            )
+            print(f"Saved decision tree to {tree_file}")
     
 if __name__ == "__main__":
     run()

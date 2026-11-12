@@ -109,8 +109,10 @@ D:\INT3011E\AgentOccam-Trajectories\
   AgentOccam_Qwen14bShopping_evidence_gated\
 ```
 
-Mỗi thư mục có config đã dùng, `<task_id>.json`, `<task_id>-trash.txt` và
-`summary.csv`. Các trường dùng để so sánh:
+Mỗi thư mục có config đã dùng, `<task_id>.json`, `<task_id>-trash.txt`,
+`<task_id>-decision-tree.txt` và `summary.csv`. File cây quyết định được xuất tự
+động khi task kết thúc; xem [cách đọc cây quyết định](decision_tree.md).
+Các trường dùng để so sánh:
 
 | Trường | Ý nghĩa |
 | --- | --- |
