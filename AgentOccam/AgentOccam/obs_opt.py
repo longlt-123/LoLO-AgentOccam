@@ -369,6 +369,7 @@ def translate_node_to_str(node: TreeNode, mode="concise", **kwargs):
     parse_node_descendants(node, partial(action_return_visible_node, intent_bias=node.depth, mode=mode, **kwargs), tree_buffer=tree_buffer)
     return "\n".join(tree_buffer[:1000])
 
+# sao chép các node hiển thị và nối lại quan hệ cha–con, bỏ qua các node không hiển thị
 def construct_new_DOM_with_visible_nodes(DOM_root:TreeNode):
     def dfs(node:TreeNode):
         if not node.visible:
