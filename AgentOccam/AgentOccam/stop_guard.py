@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 import math
 import re
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
-from .stop_requirements import OrderRequirement, parse_date, parse_requirement
+from .stop_requirements import STATUS, OrderRequirement, parse_date, parse_requirement
 from .stop_policy import resolve_stop_mode
 
 
@@ -49,15 +49,17 @@ def scope_key(url):
     return urlunsplit((parts.scheme, parts.netloc, parts.path.rstrip("/"), urlencode(query), ""))
 
 
-def order_rows(text):
-    """Read the concise Orders table, excluding sidebars and Recent Orders."""
+def order_rows(text, recent=False):
+    """Read one order table; Recent Orders has an extra Ship To column."""
     rows = []
     in_table = False
     table_indent = -1
+    table_name = "Recent Orders" if recent else "Orders"
+    header_seen = not recent
     for line in text.splitlines():
         stripped = line.lstrip()
         indent = len(line) - len(stripped)
-        if re.match(r"table(?:\s+\[\d+\])?\s+['\"]Orders['\"]", stripped):
+        if re.match(r"table(?:\s+\[\d+\])?\s+['\"]" + table_name + r"['\"]", stripped):
             in_table, table_indent = True, indent
             continue
         if in_table and stripped and indent <= table_indent:
@@ -70,6 +72,14 @@ def order_rows(text):
             continue
 
         cells = [cell.strip() for cell in match.group(1).split("|")]
+        if recent:
+            if [cell.lower() for cell in cells[:5]] in (
+                    ["order", "date", "ship to", "order total", "status"],
+                    ["order #", "date", "ship to", "order total", "status"]):
+                header_seen = True
+            if header_seen and len(cells) >= 5 and re.fullmatch(r"\d+", cells[0]):
+                rows.append((cells[0], cells[1], cells[3], cells[4]))
+            continue
         if len(cells) >= 4 and re.fullmatch(r"\d+", cells[0]):
             # Ignore action links and their unstable DOM IDs.
             rows.append(tuple(cells[:4]))
@@ -156,11 +166,21 @@ class StopGuard:
                     or option(self.sort_contract, "source", "") != "magento_history_source"
                     or not option(self.sort_contract, "reference", "")):
                 raise ValueError("order_history_sort needs an exact origin, descending Magento source contract, and reference")
+        self.recent_sort_contract = option(config, "recent_orders_sort", None)
+        if self.recent_sort_contract:
+            parts = urlsplit(option(self.recent_sort_contract, "origin", ""))
+            if (parts.scheme not in {"http", "https"} or not parts.netloc
+                    or parts.path not in {"", "/"} or parts.query or parts.fragment
+                    or option(self.recent_sort_contract, "direction", "") != "descending"
+                    or option(self.recent_sort_contract, "source", "") != "magento_recent_source"
+                    or not option(self.recent_sort_contract, "reference", "")):
+                raise ValueError("recent_orders_sort needs an exact origin, descending Magento source contract, and reference")
         order_query = re.search(r"\b(orders?|purchases?|spent)\b", objective, re.I)
         mutation = re.search(r"\b(cancel|place|reorder|delete|buy|submit|change|update)\b", objective, re.I)
 
         self.supported = bool(order_query and not mutation and (sites is None or "shopping" in sites))
         self.scopes = {}
+        self.order_details = {}
         self.feedback = ""
         self.rejections = 0
 
@@ -173,8 +193,8 @@ class StopGuard:
             self.feedback = ""
 
     def _evidence_state(self):
-        return {key: (dict(c.rows), dict(c.positions), c.total, c.issue, dict(c.sort_directions), dict(c.sort_sources))
-                for key, c in self.scopes.items()}
+        return ({key: (dict(c.rows), dict(c.positions), c.total, c.issue, dict(c.sort_directions), dict(c.sort_sources))
+                 for key, c in self.scopes.items()}, dict(self.order_details))
 
     def configured_sort(self, url):
         """Apply only the verified installation's default order, never a guess
@@ -199,6 +219,23 @@ class StopGuard:
         if not isinstance(text, str):
             return
         parts = urlsplit(url)
+        if parts.path.rstrip("/") == "/customer/account":
+            self.observe_recent_orders(url, text)
+            return
+        # Detail observations support delivery questions only after a listing has
+        # independently established which order is latest. A detail URL alone
+        # never proves that ordering.
+        if ("arrival" in self.evidence_requirement.outputs
+                and re.fullmatch(r"/sales/order/view/order_id/\d+/?", parts.path)
+                and not parts.query):
+            heading = re.search(r"^\s*heading(?: \[\d+\])? ['\"]Order (\d+)['\"]\s*$", text, re.M)
+            if heading and "Order Information" in text and "Items Ordered" in text:
+                status = re.search(r"^\s*text(?: \[\d+\])? ['\"](" + "|".join(STATUS) + r")[\"']\s*$",
+                                   text[heading.end():], re.M | re.I)
+                if status:
+                    origin = f"{parts.scheme}://{parts.netloc}"
+                    self.order_details[(origin, heading[1])] = STATUS[status[1].lower()]
+            return
         # Do not confuse an account dashboard/sidebar with the full order history.
         if parts.path.rstrip("/") != "/sales/order/history":
             return
@@ -279,6 +316,67 @@ class StopGuard:
     def snapshot(self):
         return [coverage.snapshot() for coverage in self.scopes.values()]
 
+    def observe_recent_orders(self, url, text):
+        """Use the verified storefront's latest-five collection only for latest.
+
+        This is a prefix, never full history. Require all five source-limit rows
+        so a pruned/missing first row cannot silently become the latest order.
+        Smaller accounts fall back to My Orders, which has item-count metadata.
+        """
+        requirement = self.evidence_requirement
+        if (not self.recent_sort_contract or not requirement.understood
+                or requirement.kind != "comparison" or requirement.direction != "descending"):
+            return
+        parts = urlsplit(url)
+        if (f"{parts.scheme}://{parts.netloc}" != option(self.recent_sort_contract, "origin", "").rstrip("/")
+                or parts.path.rstrip("/") != "/customer/account" or parts.query):
+            return
+        key = scope_key(url)
+        # Replace dashboard evidence rather than unioning different latest-five
+        # snapshots. A new incomplete observation invalidates the old prefix.
+        self.scopes.pop(key, None)
+        rows = order_rows(text, recent=True)
+        if (len(rows) != 5 or len({row[0] for row in rows}) != 5
+                or any(STATUS.get(row[3].lower().strip()) is None for row in rows)):
+            return
+        provenance = "magento_recent_source: " + option(self.recent_sort_contract, "reference", "")
+        coverage = Coverage(key, issue="")
+        coverage.rows = {row[0]: row for row in rows}
+        coverage.positions = {i: row[0] for i, row in enumerate(rows, 1)}
+        coverage.sort_directions = {i: "descending" for i in coverage.positions}
+        coverage.sort_sources = {i: provenance for i in coverage.positions}
+        if coverage.ordered_prefix():
+            self.scopes[key] = coverage
+
+    def arrival_evidence(self, coverage, row):
+        """Cancellation resolves delivery; otherwise inspect this order's details.
+
+        This proves source inspection, not the truth of an ETA in the answer.
+        In particular, an order date or shipping method is not an arrival date.
+        """
+        if "arrival" not in self.evidence_requirement.outputs:
+            return {}
+        status = STATUS.get(row[3].lower().strip())
+        if status == "canceled":
+            return {"arrival_evidence": "canceled_order_status"}
+        parts = urlsplit(coverage.url)
+        if self.order_details.get((f"{parts.scheme}://{parts.netloc}", row[0])) == status:
+            return {"arrival_evidence": "observed_order_details"}
+        return None
+
+    def identifies_order(self, answer, cited_ids, row):
+        if cited_ids:
+            return cited_ids == {row[0]}
+        if answer.strip().rstrip(".").lower() in {value.lower() for value in row[1:]}:
+            return True
+        if "arrival" not in self.evidence_requirement.outputs or not re.search(r"\border\b", answer, re.I):
+            return False
+        # Also accept a natural status answer without an ID, e.g. "The last
+        # order was canceled. It will never arrive."
+        observed_status = STATUS.get(row[3].lower().strip())
+        return any(re.search(r"\b" + re.escape(label) + r"\b", answer, re.I)
+                   for label, status in STATUS.items() if status == observed_status)
+
     def early_evidence(self, answer):
         """Return an auditable proof of sufficiency, or None; never trust a claim
         such as 'I checked everything' as evidence.
@@ -301,15 +399,31 @@ class StopGuard:
                 return {"reason": "requested_matches_found", "witness_ids": sorted(cited_ids),
                         "required_count": requirement.count}
             prefix = coverage.ordered_prefix()
+            comparison_reason = ("recent_order_first_match" if urlsplit(coverage.url).path == "/customer/account"
+                                 else "ordered_first_match")
+            # Full history can establish the extremum without a sort contract.
+            # Ambiguous same-day ties still need a verified ordering.
+            if not prefix and coverage.complete and "arrival" in requirement.outputs:
+                rows = list(coverage.rows.values())
+                if rows and all(parse_date(row[1]) is not None for row in rows):
+                    rows.sort(key=lambda row: parse_date(row[1]), reverse=requirement.direction == "descending")
+                    matching_rows = [row for row in rows if requirement.matches(row)]
+                    if (matching_rows and (len(matching_rows) == 1
+                            or parse_date(matching_rows[0][1]) != parse_date(matching_rows[1][1]))):
+                        prefix = requirement.direction, rows, [parse_date(row[1]) for row in rows]
+                        comparison_reason = "complete_history_first_match"
             if not prefix:
                 continue
             direction, rows, dates = prefix
-            if requirement.kind == "comparison" and requirement.direction == direction and positive:
+            if requirement.kind == "comparison" and requirement.direction == direction:
                 first = next((row for row in rows if requirement.matches(row)), None)
-                if first and (cited_ids == {first[0]} or answer.strip().rstrip(".").lower()
-                              in {value.lower() for value in first[1:]}):
-                    return {"reason": "ordered_first_match", "witness_ids": [first[0]],
-                            "sort_direction": direction}
+                # "No arrival date" / "will never arrive" do not deny that the
+                # identified order exists. Do not apply the existence veto here.
+                identifies_first = first and self.identifies_order(answer, cited_ids, first)
+                delivery = self.arrival_evidence(coverage, first) if identifies_first else None
+                if identifies_first and delivery is not None:
+                    return {"reason": comparison_reason, "witness_ids": [first[0]],
+                            "sort_direction": direction, **delivery}
             if requirement.start and requirement.kind in {"aggregate", "enumeration", "existence"}:
                 crossed = (dates[-1] < requirement.start if direction == "descending"
                            else dates[-1] > requirement.end)
@@ -340,6 +454,8 @@ class StopGuard:
             lines.append(f"Return {requirement.count} distinct matching order IDs. Once enough matches are observed, no further pages are required.")
         elif requirement.kind == "lookup":
             lines.append("The requested order's observed row is sufficient for an identity lookup.")
+        elif requirement.kind == "comparison":
+            lines.append(self.comparison_guidance())
         else:
             lines.append("Cover the relevant scope. A date boundary or first match is sufficient only with explicitly verified date sorting and a contiguous prefix from item 1.")
         
@@ -362,6 +478,19 @@ class StopGuard:
             lines.append(self.feedback)
         return "\n".join(lines)
 
+    def comparison_guidance(self):
+        guidance = ("Identify the requested order from the first matching row of a contiguous history prefix "
+                    "with trusted date sorting; visiting every history page is not required. "
+                    "A complete Recent Orders table with a verified latest-five source contract also "
+                    "suffices for latest-order queries; it is not full history. "
+                    "If that evidence is unavailable, Open My Orders (View All from Recent Orders). "
+                    "Latest means newest order date, not largest order ID. Cite the selected order ID.")
+        if "arrival" in self.evidence_requirement.outputs:
+            guidance += (" A Canceled order will not arrive. For other statuses, inspect View Order for the "
+                         "selected order's delivery information before stopping; if no ETA is displayed, "
+                         "state that limitation. Do not use the order date or shipping method as an ETA.")
+        return guidance
+
     def check(self, action):
         match = STOP.search(action or "")
         if not match:
@@ -381,7 +510,8 @@ class StopGuard:
         if prefix and not all(line.strip().startswith("note [") for line in prefix.splitlines()):
             missing = "Navigation and stop are in the same batch. Navigate first, inspect the resulting observation, then propose stop."
 
-        elif any(coverage.complete for coverage in self.scopes.values()):
+        elif any(coverage.complete and ("arrival" not in self.evidence_requirement.outputs or coverage.total == 0)
+                 for coverage in self.scopes.values()):
             self.feedback = ""
             result["reason"] = "full_coverage"
             return result
@@ -411,7 +541,9 @@ class StopGuard:
                 missing += f" Requested interval: {requirement.start.isoformat()} to {requirement.end.isoformat()}. "
                 if not any(c.ordered_prefix() for c in self.scopes.values()):
                     missing += "Missing a contiguous date-sorted prefix with trusted sort evidence. "
-            if requirement.understood and requirement.kind in {"existence", "sample"}:
+            if requirement.understood and requirement.kind == "comparison":
+                missing += " " + self.comparison_guidance()
+            elif requirement.understood and requirement.kind in {"existence", "sample"}:
                 missing += (f" To answer positively, observe {requirement.count} distinct order(s) matching ALL "
                             "requested conditions; cite the matching IDs when listing examples. "
                             "You may stop once that evidence is available. An absence or shortfall claim still needs complete relevant coverage.")

@@ -47,3 +47,31 @@ tra runtime tự động. Khi đổi image, mã nguồn, plugin can thiệp coll
 origin, cần kiểm tra lại đường đi tạo collection/pager và cập nhật tham chiếu;
 nếu chưa xác minh, bỏ `order_history_sort` để guard quay về dùng metadata DOM hoặc
 coverage đầy đủ.
+
+## Nguồn Recent Orders (xác minh ngày 2026-11-19)
+
+Đã đọc trực tiếp trên cùng container `shopping`, image `shopping_final_0712`:
+
+* `vendor/magento/module-sales/Block/Order/Recent.php`:
+  SHA-256 `e4b4ffe5450cc0feb7e76978a2872b34e5cdddc40a92bea5629e36f5ae6ed55a`.
+* `vendor/magento/module-sales/view/frontend/templates/order/recent.phtml`:
+  SHA-256 `a1a67908f475268937ce2ac32913e16933549bbc470abc84e7d71085f2992bf9`.
+
+`getRecentOrders()` lọc theo khách hàng đăng nhập, store hiện tại và trạng thái
+hiển thị frontend, rồi gọi `addAttributeToSort('created_at', 'desc')`,
+`setPageSize(self::ORDER_LIMIT)` với `ORDER_LIMIT = 5`. Template lặp trực tiếp
+collection đó, theo các cột Order, Date, Ship To, Order Total, Status, Action.
+Vì vậy đây là 5 đơn mới nhất của khách hàng ở storefront này, không phải 5 đơn
+bất kỳ hoặc các đơn có mã lớn nhất. Không mở rộng quy tắc sang đơn ở store khác.
+
+`agent.stop_guard.recent_orders_sort` khai báo nguồn `magento_recent_source`
+riêng với origin chính xác. Guard chỉ dùng tại `/customer/account/`, không có
+query, cho yêu cầu `comparison` chiều giảm dần đã parse được. Cần đọc đủ 5 hàng
+khác nhau, đúng header và thứ tự ngày; bảng rút gọn hoặc nhỏ hơn giới hạn này
+chưa đủ chứng minh prefix. Trường hợp đó chuyển sang My Orders.
+
+Evidence được giữ qua bước xem chi tiết đơn và có lý do cho phép dừng
+`recent_order_first_match`. Không dùng bảng này để chứng minh tổng số đơn,
+tổng tiền, không tồn tại đơn, hoặc đơn cũ nhất. Không dùng đáp án chuẩn hay
+trạng thái do model tự kể. Nếu đổi image/store/customization cần xác minh lại
+nguồn trước khi giữ cấu hình; hash là dấu vết kiểm tra, không phải kiểm tra runtime.

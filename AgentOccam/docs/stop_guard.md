@@ -7,6 +7,28 @@ nguồn; không dùng đáp án chuẩn, reward, suy luận hay ghi chú của m
 
 ## Ba thành phần
 
+Yêu cầu `Tell me the status of my latest order and when will it arrive` được
+parse thành `comparison`, thứ tự giảm dần, với hai đầu ra `status` và `arrival`.
+Một prefix lịch sử có thứ tự ngày đã xác minh đủ để xác định đơn mới nhất; không
+cần đọc hết các trang. `latest` dựa trên ngày đơn, không phải mã đơn lớn nhất.
+Nếu đơn đó `Canceled`, trạng thái đã đủ giải thích rằng đơn sẽ không đến. Nếu
+chưa hủy, cần quan sát trang `View Order` của cùng đơn, cùng origin và trạng thái
+trước khi dừng. Khi trang không hiển thị ETA, câu trả lời cần nói rõ giới hạn đó;
+ngày đặt đơn và phương thức vận chuyển không phải ETA. Guard kiểm tra việc đã
+đọc nguồn, không xác thực nội dung ETA do model trả lời.
+
+Các từ `no`/`never` trong câu trả lời về một đơn đã xác định không còn bị coi là
+phủ nhận sự tồn tại của đơn. `Recent Orders` được dùng cho truy vấn đơn mới nhất
+khi có cấu hình `recent_orders_sort` xác minh collection lấy 5 đơn mới nhất của
+khách hàng trong storefront hiện tại. Adapter đọc đủ 5 hàng, bỏ cột `Ship To`,
+kiểm tra thứ tự ngày và lưu prefix riêng tại `/customer/account/`; prefix này
+không bao giờ được tính là toàn bộ lịch sử. Khi bảng bị rút gọn hoặc tài khoản
+có dưới 5 đơn, fallback là `My Orders` với metadata số lượng. Trang chi tiết
+đơn riêng lẻ vẫn chưa chứng minh được đơn nào mới nhất.
+Đã đọc toàn bộ lịch sử cũng có thể xác định đơn mới nhất theo ngày nếu không có
+đồng hạng ngày ở vị trí cần chọn. Toàn bộ lịch sử không thay thế bằng chứng giao
+hàng của đơn chưa hủy.
+
 1. **Theo dõi phạm vi:** lưu riêng các hàng đơn hàng đã nhìn thấy và vị trí của chúng
    trong `Items 1 to 10 of 37 total`. Bộ nhớ này tồn tại qua các bước, không bị mất
    khi actor rút gọn history hoặc prune plan. URL trang và thao tác click không chứng

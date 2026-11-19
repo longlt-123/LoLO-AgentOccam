@@ -154,6 +154,13 @@ def parse_requirement(objective):
         r"(?:what is|tell me) (?:the )?(?:status|date|total|total cost|order total) of (?:my )?order (\d{6,})", text)
     if identity:
         return OrderRequirement("lookup", understood=True, target_ids=(identity[1],))
+    status_arrival = re.fullmatch(
+        r"(?:what is|tell me|get) (?:the )?status of (?:my |the )?"
+        r"(latest|most recent|earliest|first) (.+?) and when (?:will it|it will) arrive", text)
+    if status_arrival:
+        direction = "descending" if status_arrival[1] in {"latest", "most recent"} else "ascending"
+        return criteria_requirement("comparison", status_arrival[2], direction=direction,
+                                    reference_date=reference_date, outputs=("status", "arrival"))
     latest = re.fullmatch(
         r"(?:what is|tell me|get) (?:the )?(?:status|date|total cost|order number) of (?:my |the )?"
         r"(latest|most recent|earliest|first) (.+)", text)

@@ -1,0 +1,6 @@
+{
+  "objective": "Tell me the status of my latest order and when will it arrive",
+  "url": "http://localhost:7770/customer/account/",
+  "observation": "RootWebArea 'My Account'\n\tmain\n\t\ttable 'Recent Orders'\n\t\t\trow '| Order | Date | Ship To | Order Total | Status | Action |'\n\t\t\trow '| --- | --- | --- | --- | --- | --- |'\n\t\t\trow \"| 000000170 | 5/17/23 | Emma Lopez | 365.42 | Canceled | View OrderReorder\\tlink [4562] 'View Order'\\tlink [4563] 'Reorder' |\"\n\t\t\trow \"| 000000189 | 5/2/23 | Emma Lopez | 754.99 | Pending | View OrderReorder\\tlink [4574] 'View Order'\\tlink [4575] 'Reorder' |\"\n\t\t\trow \"| 000000188 | 5/2/23 | Emma Lopez | 2,004.99 | Pending | View OrderReorder\\tlink [4586] 'View Order'\\tlink [4587] 'Reorder' |\"\n\t\t\trow \"| 000000187 | 5/2/23 | Emma Lopez | 1,004.99 | Pending | View OrderReorder\\tlink [4598] 'View Order'\\tlink [4599] 'Reorder' |\"\n\t\t\trow \"| 000000180 | 3/11/23 | Emma Lopez | 65.32 | Complete | View OrderReorder\\tlink [4610] 'View Order'\\tlink [4611] 'Reorder' |\"",
+  "proposed_action": "stop [The latest order (000000170) is marked as \"Canceled\" and will not arrive.]"
+}
